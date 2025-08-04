@@ -7,6 +7,6 @@ def scrape_website(url):
         soup = BeautifulSoup(res.text, "html.parser")
         full_text = soup.get_text(separator="\n")
         # ✅ Limit to 4000 characters to reduce Gemini token load
-        return full_text[:4000]
+        return full_text[:10000]
     except Exception as e:
         return f"Error scraping site: {e}"
