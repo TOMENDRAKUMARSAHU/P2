@@ -1,23 +1,77 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Universal AI Agent</title>
+    <title>Universal AI Agent</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f8fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 720px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        input[type="file"] {
+            margin-top: 20px;
+        }
+        .result-box {
+            margin-top: 30px;
+        }
+        .question {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .answer {
+            margin-bottom: 20px;
+            color: #34495e;
+        }
+        .url {
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #888;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #2e86de;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1b4f72;
+        }
+    </style>
 </head>
-<body style="font-family: sans-serif; padding: 20px;">
-  <h2>Upload File for Gemini-Powered Q&A</h2>
-  <form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" required>
-    <button type="submit">Submit</button>
-  </form>
+<body>
+    <div class="container">
+        <h1>Universal AI Agent</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <br><br>
+            <button type="submit">Upload & Analyze</button>
+        </form>
 
-  {% if result %}
-    <h3>Extracted URL:</h3>
-    <p>{{ result.url }}</p>
-    <h3>Questions & Answers:</h3>
-    {% for q, a in result.qa %}
-      <p><strong>Q:</strong> {{ q }}<br><strong>A:</strong> {{ a }}</p>
-    {% endfor %}
-  {% endif %}
+        {% if result %}
+        <div class="result-box">
+            <div class="url">🔗 <strong>URL from File:</strong> {{ result.url }}</div>
+            <hr>
+            {% for q, a in result.qa %}
+                <div class="question">Q: {{ q }}</div>
+                <div class="answer">A: {{ a }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
