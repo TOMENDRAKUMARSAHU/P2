@@ -2,7 +2,8 @@
 from flask import Flask, request, render_template
 from file_handler import extract_text_from_file
 from gemini_qa import extract_url_and_questions, answer_questions_with_retry
-from scraper import scrape_website
+from utils.scraper import scrape_website
+
 import os
 
 app = Flask(__name__)
