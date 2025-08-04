@@ -2,7 +2,7 @@ import os
 import zipfile
 import json
 import pandas as pd
-import fitz  # PyMuPDF
+import pdfplumber
 import docx
 import re
 
@@ -51,7 +51,8 @@ def extract_text_from_zip(filepath):
 def parse_any_file(filepath):
     ext = os.path.splitext(filepath)[1].lower()
     if ext == ".pdf":
-        return extract_text_from_pdf(filepath)
+    with pdfplumber.open(file_path) as pdf:
+        content = "\n".join(page.extract_text() or "" for page in pdf.pages)
     elif ext == ".docx":
         return extract_text_from_docx(filepath)
     elif ext == ".json":
