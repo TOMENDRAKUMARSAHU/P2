@@ -29,19 +29,16 @@ def is_uncertain(answer):
 
 def answer_questions_with_retry(questions, file_text, scraped_text, max_retries=2):
     qa_pairs = []
+    context = f"{file_text}\n\n{scraped_text}"
 
     for q in questions:
-        answer = None
         retries = 0
-        context = f"{file_text}\n\n{scraped_text}"
-
         while retries <= max_retries:
             answer = ask_gemini(context, q)
             if not is_uncertain(answer):
                 break
             retries += 1
             time.sleep(2)
-
         qa_pairs.append((q, answer))
 
     return qa_pairs
