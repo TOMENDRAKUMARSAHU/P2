@@ -1,20 +1,28 @@
 import requests
 from bs4 import BeautifulSoup
 
-def scrape_website(url):
+def scrape_website(url, max_chars=8000):
     try:
         res = requests.get(url, timeout=10)
         soup = BeautifulSoup(res.text, "html.parser")
 
-        # ✅ Target the first table with movie data
-        table = soup.find("table", class_="wikitable")
+        # Remove unnecessary scripts/styles
+        for tag in soup(["script", "style", "noscript", "footer", "header", "form", "svg"]):
+            tag.decompose()
 
-        if table:
-            return table.get_text(separator="\n").strip()
+        # Collect meaningful content: headings, paragraphs, tables
+        content_parts = []
 
-        # Fallback to limited full text if table not found
-        full_text = soup.get_text(separator="\n")
-        return full_text[:4000]
+        for tag in soup.find_all(["h1", "h2", "h3", "p", "li", "table"]):
+            text = tag.get_text(separator=" ", strip=True)
+            if text:
+                content_parts.append(text)
+
+        # Join parts into one text block
+        full_text = "\n".join(content_parts)
+
+        # Limit the length for token budget
+        return full_text[:max_chars]
 
     except Exception as e:
         return f"Error scraping site: {e}"
