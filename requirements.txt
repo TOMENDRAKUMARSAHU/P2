@@ -14,3 +14,4 @@ google-generativeai
 chardet
 textract==1.6.3
 python-dotenv
+six
