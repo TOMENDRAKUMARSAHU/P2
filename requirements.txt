@@ -1,7 +1,9 @@
 
-Flask
-beautifulsoup4
+flask
 google-generativeai
-python-docx
-PyMuPDF
+beautifulsoup4
+requests
 pandas
+python-docx
+python-pptx
+PyPDF2
