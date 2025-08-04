@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from werkzeug.utils import secure_filename
 from gemini_qa import answer_questions_with_retry
 from utils.scraper import scrape_website
 from utils.file_parser import (
@@ -9,21 +10,30 @@ from utils.file_parser import (
 import os
 
 app = Flask(__name__)
+UPLOAD_FOLDER = "uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = None
+
     if request.method == "POST":
+        if "file" not in request.files:
+            return render_template("index.html", result={"error": "No file part in request."})
+
         file = request.files["file"]
-        filepath = os.path.join("uploads", file.filename)
-        os.makedirs("uploads", exist_ok=True)
+        if file.filename == "":
+            return render_template("index.html", result={"error": "No file selected."})
+
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
 
-        # Extract text, URL, and questions
+        # Extract file content and questions
         file_text = parse_any_file(filepath)
         url, questions = extract_url_and_questions(file_text)
 
-        # Try fetching URL content (scrape or parquet)
+        # Scrape or download data from URL
         if url and url.endswith(".parquet"):
             scraped_text = try_fetch_parquet_from_url(url)
         elif url:
@@ -31,8 +41,11 @@ def index():
         else:
             scraped_text = ""
 
-        # Ask Gemini for answers
-        qa_pairs = answer_questions_with_retry(questions, file_text, scraped_text)
+        try:
+            qa_pairs = answer_questions_with_retry(questions, file_text, scraped_text)
+        except Exception as e:
+            qa_pairs = [("Error", f"Failed to answer questions: {str(e)}")]
+
         result = {"url": url, "qa": qa_pairs}
 
     return render_template("index.html", result=result)
