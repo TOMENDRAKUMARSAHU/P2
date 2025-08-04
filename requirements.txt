@@ -1,0 +1,7 @@
+
+Flask
+beautifulsoup4
+google-generativeai
+python-docx
+PyMuPDF
+pandas
