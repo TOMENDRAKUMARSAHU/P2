@@ -13,3 +13,4 @@ tqdm
 google-generativeai
 chardet
 textract
+python-dotenv
