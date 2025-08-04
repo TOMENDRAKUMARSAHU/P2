@@ -1,18 +1,23 @@
-
 import requests
 from bs4 import BeautifulSoup
 
 def scrape_website(url, max_chars=8000):
     try:
-        res = requests.get(url, timeout=10)
-        soup = BeautifulSoup(res.text, "html.parser")
-        for tag in soup(["script", "style", "footer", "header", "noscript"]):
+        response = requests.get(url, timeout=10)
+        soup = BeautifulSoup(response.text, "lxml")
+
+        for tag in soup(["script", "style", "header", "footer", "nav", "aside"]):
             tag.decompose()
-        parts = []
+
+        content = []
         for tag in soup.find_all(["h1", "h2", "h3", "p", "li", "table"]):
-            txt = tag.get_text(separator=" ", strip=True)
-            if txt:
-                parts.append(txt)
-        return "\n".join(parts)[:max_chars]
+            text = tag.get_text(strip=True)
+            if text:
+                content.append(text)
+            if sum(len(c) for c in content) > max_chars:
+                break
+
+        return "\n".join(content)
+
     except Exception as e:
-        return f"Error scraping site: {e}"
+        return f"Error scraping website: {e}"
