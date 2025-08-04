@@ -1,11 +1,11 @@
 import google.generativeai as genai
 import os
 
-# Configure Gemini with your API key
+# Configure Gemini with API Key
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
-# ✅ Use the correct model name (latest supported)
-model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
+# ✅ Use lighter + faster model to avoid quota issues
+model = genai.GenerativeModel("models/gemini-1.5-flash-latest")
 
 def answer_question(question, context):
     try:
@@ -14,4 +14,3 @@ def answer_question(question, context):
         return response.text
     except Exception as e:
         return f"Error answering question: {e}"
-
