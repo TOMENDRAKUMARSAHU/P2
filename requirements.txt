@@ -6,3 +6,8 @@ pandas
 python-docx
 pyarrow
 google-generativeai
+lxml
+python-pptx
+PyMuPDF
+openpyxl
+tqdm
